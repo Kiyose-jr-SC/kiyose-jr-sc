@@ -461,6 +461,7 @@ button { font: inherit; color: inherit; }
 .field select { background-image: linear-gradient(45deg, transparent 50%, var(--navy) 50%), linear-gradient(135deg, var(--navy) 50%, transparent 50%); background-position: calc(100% - 22px) 50%, calc(100% - 16px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 2.6rem; }
 .field textarea { min-height: 9rem; resize: vertical; line-height: 1.7; }
 .field input:focus, .field select:focus, .field textarea:focus { outline: 0; border-bottom-color: var(--yellow); box-shadow: 0 4px 0 0 var(--navy), 0 0 0 3px rgba(250, 204, 21, .5); }
+.form-pre { margin-block: 1.25rem 1.5rem; }
 .form-note { grid-column: 1 / -1; padding: .9rem 1.1rem; background: #fff6cc; border-left: 6px solid var(--yellow); font-weight: 500; }
 .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
 .form-done { grid-column: 1 / -1; font-weight: 900; color: var(--navy); }
