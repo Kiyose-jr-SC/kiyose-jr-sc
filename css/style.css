@@ -469,11 +469,11 @@ button { font: inherit; color: inherit; }
 
 /* ---------- 活動場所 ---------- */
 .venues { display: grid; gap: clamp(20px, 3vw, 36px); }
-@media (min-width: 800px) { .venues { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 700px) { .venues { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .venues { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .venue { border-top: 2px solid var(--navy); padding-top: 1rem; }
 .venue h3 { font-size: 1.3rem; }
 .venue p { margin-top: .4rem; }
-.venue .vk { display: inline-block; margin-top: .6rem; font-weight: 700; font-size: .9375rem; background: #e3e8ef; padding: .3rem .8rem; border-top-left-radius: 11px; }
 .venue .map { margin-top: .8rem; }
 .list-lines li { padding: .7rem 0; border-top: 1px solid var(--line); font-weight: 500; }
 .list-lines li:last-child { border-bottom: 1px solid var(--line); }
@@ -498,10 +498,11 @@ button { font: inherit; color: inherit; }
 .foot-brand b { display: block; font-size: 1.125rem; }
 .foot-brand small { font-family: var(--num); letter-spacing: .12em; color: #94a3b8; font-weight: 600; }
 .foot-nav { display: flex; flex-wrap: wrap; gap: .3rem 1.6rem; }
-.foot-nav a { text-decoration: none; font-weight: 700; padding: .4rem 0; background: linear-gradient(var(--yellow), var(--yellow)) 0 100% / 0 3px no-repeat; transition: background-size .2s; }
+.foot-nav a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-weight: 700; background: linear-gradient(var(--yellow), var(--yellow)) 0 calc(100% - 8px) / 0 3px no-repeat; transition: background-size .2s; }
 .foot-nav a:hover { background-size: 100% 3px; color: var(--white); }
+@media (max-width: 899px) { .foot-nav { gap: 0 1.6rem; } }
 .foot-sns { display: flex; gap: 1.2rem; margin-top: 1rem; }
-.foot-sns a { color: var(--white); font-weight: 700; text-decoration: none; background: linear-gradient(var(--yellow), var(--yellow)) 0 100% / 100% 3px no-repeat; }
+.foot-sns a { display: inline-flex; align-items: center; min-height: 44px; color: var(--white); font-weight: 700; text-decoration: none; background: linear-gradient(var(--yellow), var(--yellow)) 0 calc(100% - 8px) / 100% 3px no-repeat; }
 .copy { margin-top: clamp(26px, 4vw, 44px); padding-top: 1.2rem; border-top: 1px solid rgba(255,255,255,.2); font-size: .875rem; }
 
 @media (prefers-reduced-motion: reduce) {

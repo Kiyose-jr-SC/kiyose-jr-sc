@@ -11,6 +11,8 @@
 <meta property="og:site_name" content="清瀬ジュニアサッカークラブ">
 <meta property="og:title" content="保護者の方へ（お知らせ・活動予定・資料・欠席連絡）｜清瀬ジュニアサッカークラブ">
 <meta property="og:description" content="清瀬ジュニアSCの保護者向けページ。最新のお知らせ、活動予定（学年で絞り込み・カレンダー追加）、配布資料、欠席・遅刻連絡、活動場所をまとめています。">
+<link rel="canonical" href="https://kiyose-jr-sc.club/parents/">
+<meta property="og:url" content="https://kiyose-jr-sc.club/parents/">
 <meta property="og:image" content="https://kiyose-jr-sc.club/images/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">
@@ -107,11 +109,11 @@
     <form class="form two" data-form="absence" novalidate>
       <p class="form-note">ただいま、連絡フォームを準備しています。送信できるようになるまでは、これまでどおりご連絡ください。</p>
       <div class="field"><label for="abs-grade">学年</label>
-        <select id="abs-grade" name="grade"><option>幼児</option><option>1年</option><option>2年</option><option>3年</option><option>4年</option><option selected>5年</option><option>6年</option></select></div>
+        <select id="abs-grade" name="grade" required><option value="" selected disabled>選んでください</option><option>幼児</option><option>1年</option><option>2年</option><option>3年</option><option>4年</option><option>5年</option><option>6年</option></select></div>
       <div class="field"><label for="abs-name">選手のお名前</label><input id="abs-name" name="name" type="text" autocomplete="off" placeholder="例：きよせ 太郎" required></div>
       <div class="field"><label for="abs-date">対象日</label><input id="abs-date" name="date" type="date" required></div>
       <div class="field"><label for="abs-type">連絡区分</label>
-        <select id="abs-type" name="type"><option>欠席</option><option>遅刻（途中参加）</option><option>早退</option></select></div>
+        <select id="abs-type" name="type" required><option>欠席</option><option>遅刻（途中参加）</option><option>早退</option></select></div>
       <div class="field full"><label for="abs-note">備考<span class="opt">（任意）</span></label><input id="abs-note" name="note" type="text" placeholder="例：学校行事のため、14:30ごろから参加します"></div>
       <div class="form-actions full"><button class="btn btn-navy" type="submit" disabled>連絡を送信する</button></div>
     </form>
@@ -122,9 +124,10 @@
   <div class="wrap">
     <div class="sh"><span class="no">5</span><h2>活動場所</h2></div>
     <div class="venues">
-      <article class="venue"><h3>清明小学校</h3><p>主なホームグラウンドです。校門前での車の乗降はご遠慮ください。</p><span class="vk">駐車場：コーチのみ</span><p class="map"><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B8%85%E6%98%8E%E5%B0%8F%E5%AD%A6%E6%A0%A1%20%E6%B8%85%E7%80%AC%E5%B8%82" target="_blank" rel="noopener">地図で見る</a></p></article>
-      <article class="venue"><h3>清瀬第八小学校</h3><p>主な練習・体験会の会場です。正門からお入りください。</p><span class="vk">駐車場：近隣のパーキングをご利用ください</span><p class="map"><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B8%85%E7%80%AC%E7%AC%AC%E5%85%AB%E5%B0%8F%E5%AD%A6%E6%A0%A1%20%E6%B8%85%E7%80%AC%E5%B8%82" target="_blank" rel="noopener">地図で見る</a></p></article>
-      <article class="venue"><h3>内山運動公園サッカー場</h3><p>大会・蹴り納めなどの会場です（C面など）。</p><span class="vk">公園の駐車場あり</span><p class="map"><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%86%85%E5%B1%B1%E9%81%8B%E5%8B%95%E5%85%AC%E5%9C%92%20%E3%82%B5%E3%83%83%E3%82%AB%E3%83%BC%E5%A0%B4%20%E6%B8%85%E7%80%AC%E5%B8%82" target="_blank" rel="noopener">地図で見る</a></p></article>
+      <article class="venue"><h3>清明小学校</h3><p class="map"><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B8%85%E6%98%8E%E5%B0%8F%E5%AD%A6%E6%A0%A1%20%E6%B8%85%E7%80%AC%E5%B8%82" target="_blank" rel="noopener">地図で見る</a></p></article>
+      <article class="venue"><h3>清瀬第八小学校</h3><p class="map"><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B8%85%E7%80%AC%E7%AC%AC%E5%85%AB%E5%B0%8F%E5%AD%A6%E6%A0%A1%20%E6%B8%85%E7%80%AC%E5%B8%82" target="_blank" rel="noopener">地図で見る</a></p></article>
+      <article class="venue"><h3>内山運動公園サッカー場</h3><p class="map"><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%86%85%E5%B1%B1%E9%81%8B%E5%8B%95%E5%85%AC%E5%9C%92%20%E3%82%B5%E3%83%83%E3%82%AB%E3%83%BC%E5%A0%B4%20%E6%B8%85%E7%80%AC%E5%B8%82" target="_blank" rel="noopener">地図で見る</a></p></article>
+      <article class="venue"><h3>清明小学校体育館</h3><p>木曜の室内サッカー</p><p class="map"><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B8%85%E6%98%8E%E5%B0%8F%E5%AD%A6%E6%A0%A1%20%E4%BD%93%E8%82%B2%E9%A4%A8%20%E6%B8%85%E7%80%AC%E5%B8%82" target="_blank" rel="noopener">地図で見る</a></p></article>
     </div>
   </div>
 </section>

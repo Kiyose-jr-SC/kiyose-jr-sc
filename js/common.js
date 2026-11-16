@@ -240,6 +240,7 @@
         if (btn) btn.disabled = false;
         form.addEventListener('submit', function (e) {
           e.preventDefault();
+          if (!form.checkValidity()) { form.reportValidity(); return; }
           var fd = new FormData();
           var f = c.fields || {};
           Object.keys(f).forEach(function (k) {

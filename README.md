@@ -69,6 +69,8 @@ URLやIDは `config.js` に集めてあります。
 
 ## 公開の流れ（予定）
 
-1. 仮サイト：くりりんのVercelアカウントで公開 → スマホで確認
+1. 仮サイト：Vercelの仮URL（○○.vercel.app）で公開 → スマホで確認。仮URLには自動で「検索に載せない」の指定が付き、独自ドメインでは自動で外れます（外し忘れはありません）
 2. 本番：チーム用のGitHub・Vercelに移し、ドメイン `kiyose-jr-sc.club`（wwwなし）をつなぐ
-3. つないだら `sitemap.xml` と `robots.txt` の中のドメインが合っているか確認する
+3. つないだら `sitemap.xml`・`robots.txt`・各ページの `canonical`／`og:url` のドメインが合っているか確認する
+
+※ このREADMEは、公開されるサイトには含まれません（`.vercelignore` で除外）。
