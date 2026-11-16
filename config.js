@@ -17,7 +17,15 @@ window.SITE_CONFIG = {
     instagramHandle: '@KIYOSE.JR',
     // Facebook のページURLを入れると、フッターと「お問い合わせ・リンク」に出ます。
     // 例）'https://www.facebook.com/○○○○'
-    facebook: ''
+    facebook: '',
+    // LINE公式アカウントの「友だち追加」のURLを入れると、
+    // 「LINEで相談・友だち追加」のボタンが出ます（お問い合わせページ、体験・入団案内、フッター）。
+    // 空のままのときは、ボタンは出ません。
+    // 取ってくる場所：LINE Official Account Manager → 「友だちを増やす」→「友だち追加ガイド」
+    //   → 「URLを作成」で出る https://lin.ee/… のURL
+    //   ※ https://lin.ee/ または https://line.me/ で始まるものだけが使えます。
+    // 例）'https://lin.ee/○○○○○'
+    line: ''
   },
 
   /* ---------- お知らせ・試合結果（Googleスプレッドシート） ----------
@@ -66,25 +74,40 @@ window.SITE_CONFIG = {
   },
 
   /* ---------- 欠席・遅刻連絡 / お問い合わせ（Googleフォーム） ----------
-   * どちらも、次の2つのやり方があります。やさしいのは【やり方A】です。
+   * どちらも、次の3つのやり方があります。おすすめは【やり方A】です。
    *
-   * 【やり方A】Googleフォームの「送信 → リンク」のURLを viewUrl に貼る。
+   * 【やり方A】フォームをサイトの中に表示する（おすすめ）
+   *            Googleフォームの編集画面で
+   *              右上「送信」→ 真ん中のタブ「< >」（埋め込む）
+   *            を開くと、<iframe src="https://docs.google.com/forms/d/e/…/viewform?embedded=true" …>
+   *            という文字が出ます。その src="" の中のURLだけを、embedUrl に貼ってください。
+   *            → サイトの中にフォームが出ます。
+   *            → あとからフォームの質問を変えても、サイト側は直さなくて大丈夫です。
+   *            ※ https://docs.google.com/ で始まるものだけが使えます。
+   *            ※ 下に「うまく表示されないときは、こちらから開けます」のリンクも出ます。
+   *              （リンク先は viewUrl があればそれ、なければ embedUrl と同じフォームです）
+   * 【やり方B】ボタンでフォームを別の画面で開く
+   *            Googleフォームの「送信 → リンク」（鎖のマーク）のURLを viewUrl に貼る。
    *            → サイトに「フォームを開く」ボタンが出ます。
-   * 【やり方B】サイトのデザインのまま送りたいとき。
+   *            ※ embedUrl が入っているときは、やり方Aが優先されます。
+   * 【やり方C】サイトのデザインのまま送りたいとき（むずかしい）
    *            action に「…/formResponse」で終わるURL、
    *            fields に各質問の「entry.数字」を入れる（作った人に聞いてください）。
    *            ※ 対象日の質問は、フォーム側を「記述式」にしてください。
    *
-   * どちらも空のときは、「準備中です」と表示され、送信できません。
+   * 優先順位：embedUrl（サイトの中に表示）→ viewUrl（ボタン）→ action（サイトのフォーム）
+   * すべて空のときは、「準備中です」と表示され、送信できません。
    */
   forms: {
     absence: {
-      viewUrl: '',
+      embedUrl: '',   // 例）https://docs.google.com/forms/d/e/1FAIpQLS…/viewform?embedded=true
+      viewUrl: '',    // 例）https://forms.gle/…
       action: '',
       fields: { grade: '', name: '', date: '', type: '', note: '' }
     },
     contact: {
-      viewUrl: '',
+      embedUrl: '',   // 例）https://docs.google.com/forms/d/e/1FAIpQLS…/viewform?embedded=true
+      viewUrl: '',    // 例）https://forms.gle/…
       action: '',
       fields: { name: '', email: '', subject: '', body: '' }
     }

@@ -15,6 +15,19 @@
     return n;
   }
   function isHttps(u) { return typeof u === 'string' && /^https:\/\//.test(u); }
+  /* https で、ホストが許可リストに合うURLだけ通す（それ以外は無かったことにする） */
+  function parseUrl(u) { try { return new URL(u); } catch (e) { return null; } }
+  function isGoogleFormUrl(u) {
+    var p = isHttps(u) && parseUrl(u);
+    return !!p && p.hostname === 'docs.google.com' && /^\/forms\//.test(p.pathname);
+  }
+  function isLineUrl(u) {
+    var p = isHttps(u) && parseUrl(u);
+    return !!p && (p.hostname === 'lin.ee' || p.hostname === 'line.me' || /\.line\.me$/.test(p.hostname));
+  }
+  /* 埋め込み用：embedded=true を付ける／外す */
+  function formEmbedSrc(u) { var p = parseUrl(u); p.searchParams.set('embedded', 'true'); return p.toString(); }
+  function formViewSrc(u) { var p = parseUrl(u); p.searchParams.delete('embedded'); return p.toString(); }
   function parseYMD(s) {
     var m = /(\d{4})\s*[-\/.年]\s*(\d{1,2})\s*[-\/.月]\s*(\d{1,2})/.exec(String(s || ''));
     if (!m) return null;
@@ -224,6 +237,28 @@
       var btn = form.querySelector('button[type="submit"]');
       var label = key === 'absence' ? '欠席・遅刻連絡フォームを開く' : 'お問い合わせフォームを開く';
 
+      /* ① embedUrl があるとき：サイトの中にGoogleフォームを出す（自前の入力欄は隠す） */
+      if (isGoogleFormUrl(c.embedUrl)) {
+        var emb = el('div', 'form-embed');
+        var frame = el('iframe', 'form-frame');
+        frame.src = formEmbedSrc(c.embedUrl);
+        frame.title = key === 'absence' ? '欠席・遅刻連絡フォーム（Googleフォーム）' : 'お問い合わせフォーム（Googleフォーム）';
+        frame.loading = 'lazy';
+        frame.setAttribute('loading', 'lazy');
+        frame.setAttribute('frameborder', '0');
+        frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        emb.appendChild(frame);
+        var fallback = el('p', 'form-embed-note', 'うまく表示されないときは、');
+        var fa = el('a', 'text-link', 'こちらから開けます');
+        fa.href = isHttps(c.viewUrl) ? c.viewUrl : formViewSrc(c.embedUrl);
+        fa.target = '_blank'; fa.rel = 'noopener';
+        fallback.appendChild(fa);
+        fallback.appendChild(document.createTextNode('。'));
+        emb.appendChild(fallback);
+        form.replaceWith(emb);
+        return;
+      }
+      /* ② embedUrl が無く viewUrl があるとき：フォームを開くボタン */
       if (isHttps(c.viewUrl)) {
         var box = el('div', 'form-open');
         box.appendChild(el('p', null, key === 'absence'
@@ -278,8 +313,13 @@
     initMenu(); initLightbox(); initNews(); initResults(); initForms();
     document.querySelectorAll('[data-year]').forEach(function (n) { n.textContent = new Date().getFullYear(); });
     document.querySelectorAll('[data-social]').forEach(function (a) {
-      var v = (CFG.social || {})[a.getAttribute('data-social')];
-      if (isHttps(v)) { a.href = v; a.hidden = false; }
+      var k = a.getAttribute('data-social');
+      var v = (CFG.social || {})[k];
+      var ok = k === 'line' ? isLineUrl(v) : isHttps(v);   // LINE は lin.ee / line.me だけ
+      if (ok) {
+        a.href = v; a.hidden = false;
+        var b = a.closest('[data-social-box]'); if (b) b.hidden = false;
+      }
     });
     document.querySelectorAll('[data-drive]').forEach(function (a) {
       if (isHttps((CFG.drive || {}).folderUrl)) { a.href = CFG.drive.folderUrl; a.hidden = false; var b = a.closest('[data-drive-box]'); if (b) b.hidden = false; }
