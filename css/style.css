@@ -492,12 +492,13 @@ button { font: inherit; color: inherit; }
 /* ---------- フッター ---------- */
 .site-footer { background: var(--navy-deep); color: #cbd5e1; padding-block: clamp(40px, 6vw, 72px) 26px; }
 .foot-grid { display: grid; gap: 1.6rem 3rem; }
-@media (min-width: 900px) { .foot-grid { grid-template-columns: minmax(0, 1fr) auto; align-items: start; } }
+@media (min-width: 900px) { .foot-grid { grid-template-columns: auto minmax(0, 1fr); align-items: start; } }
 .foot-brand { display: flex; align-items: center; gap: 16px; color: var(--white); text-decoration: none; }
 .foot-brand img { width: 64px; height: auto; }
 .foot-brand b { display: block; font-size: 1.125rem; }
 .foot-brand small { font-family: var(--num); letter-spacing: .12em; color: #94a3b8; font-weight: 600; }
 .foot-nav { display: flex; flex-wrap: wrap; gap: .3rem 1.6rem; }
+@media (min-width: 900px) { .foot-nav { justify-content: flex-end; } }
 .foot-nav a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-weight: 700; background: linear-gradient(var(--yellow), var(--yellow)) 0 calc(100% - 8px) / 0 3px no-repeat; transition: background-size .2s; }
 .foot-nav a:hover { background-size: 100% 3px; color: var(--white); }
 @media (max-width: 899px) { .foot-nav { gap: 0 1.6rem; } }
