@@ -36,7 +36,9 @@ export default function middleware(request) {
   const user = process.env.PARENTS_USER;
   const pass = process.env.PARENTS_PASS;
   if (!user || !pass) {
-    return new Response('保護者向けページは、ただいま準備中です。', { status: 503, headers: NO_STORE });
+    // どちらが未設定かだけを出す（値は出さない）。設定の確認用
+    const mark = 'ID:' + (user ? 'o' : 'x') + ' PW:' + (pass ? 'o' : 'x') + ' ENV:' + (process.env.VERCEL_ENV || '-');
+    return new Response('保護者向けページは、ただいま準備中です。（' + mark + '）', { status: 503, headers: NO_STORE });
   }
 
   const auth = request.headers.get('authorization') || '';
