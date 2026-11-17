@@ -563,3 +563,6 @@ button { font: inherit; color: inherit; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; }
 }
+
+/* 語の途中で折り返させない（例：U-12） */
+.nw { white-space: nowrap; }
