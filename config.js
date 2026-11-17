@@ -136,8 +136,10 @@ window.SITE_CONFIG = {
    * すべて空のときは、「準備中です」と表示され、送信できません。
    */
   forms: {
+    // 欠席・遅刻連絡フォームのURLは、ここには書かない（このファイルは誰でも読めるため）。
+    // Vercel の環境変数 ABSENCE_FORM_URL に入れると、保護者ページの鍵を通った人にだけ渡ります。
     absence: {
-      embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSccRSeoWBGjVbtGUeAOyrf153emEXxwrwamQ23qay27F4OzYg/viewform?embedded=true',   // 例）https://docs.google.com/forms/d/e/1FAIpQLS…/viewform?embedded=true
+      embedUrl: '',
       viewUrl: '',    // 例）https://forms.gle/…
       action: '',
       fields: { grade: '', name: '', date: '', type: '', note: '' }

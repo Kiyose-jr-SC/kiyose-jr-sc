@@ -230,6 +230,20 @@
     document.querySelectorAll('form[data-form]').forEach(function (form) {
       var key = form.getAttribute('data-form');
       var c = (CFG.forms || {})[key] || {};
+      /* 欠席連絡のURLは config.js に置かず、保護者ページの鍵を通った人にだけ /parents/forms.json で渡す */
+      if (key === 'absence' && !c.embedUrl && !c.viewUrl && !c.action) {
+        fetch('/parents/forms.json', { credentials: 'same-origin', cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : {}; })
+          .then(function (j) { if (j && j.absence && form.isConnected) setupForm(form, key, j.absence); })
+          .catch(function () { /* 準備中のまま */ });
+        return;
+      }
+      setupForm(form, key, c);
+    });
+    setDefaults();
+  }
+  function setupForm(form, key, c) {
+    (function () {
       var note = form.querySelector('.form-note');
       var btn = form.querySelector('button[type="submit"]');
       var label = key === 'absence' ? '欠席・遅刻連絡フォームを開く' : 'お問い合わせフォームを開く';
@@ -292,8 +306,7 @@
         });
       }
       /* どちらも空：準備中のまま（送信ボタンは無効） */
-    });
-    setDefaults();
+    })();
   }
   function setDefaults() {
     var d = document.getElementById('abs-date');

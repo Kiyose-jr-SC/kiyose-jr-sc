@@ -45,6 +45,15 @@ export default function middleware(request) {
     const pair = decode(m[1].trim());
     const i = pair.indexOf(':');
     if (i >= 0 && same(pair.slice(0, i), user) && same(pair.slice(i + 1), pass)) {
+      // 欠席・遅刻連絡フォームのURLは、鍵を通った人にだけ渡す（config.js や公開リポジトリには置かない）
+      if (new URL(request.url).pathname === '/parents/forms.json') {
+        const url = process.env.ABSENCE_FORM_URL || '';
+        const ok = /^https:\/\/docs\.google\.com\/forms\//.test(url);
+        return new Response(JSON.stringify({ absence: { embedUrl: ok ? url : '' } }), {
+          status: 200,
+          headers: { ...NO_STORE, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
       return; // 合っていれば、そのままページへ通す
     }
   }
