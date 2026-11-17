@@ -15,8 +15,8 @@
   var MARKS = '幼①②③④⑤⑥';                         // 学年の印（schedule.js の gradesFrom と同じもの）
   var TIME = '\\d{1,2}(?::\\d{2}|時\\d{1,2}分?|時半|半|時)?';   // 13 / 13:30 / 13時 / 13時30分 / 7半 / 12時半
 
-  var HOUR_MIN = 6, HOUR_MAX = 23;                      // タイトルから時間として読む範囲（6時〜23時台）
-  var NOT_TIME_AFTER = /^\s*[回節位年組番戦本点人日月]/;  // 「1-2回戦」「3-4位」の数字は時間ではない
+  var HOUR_MIN = 5, HOUR_MAX = 23;                      // タイトルから時間として読む範囲（5時〜23時台。遠征の早い集合も読む）
+  var NOT_TIME_AFTER = /^[回節位年組番戦本点人日月]/;     // 数字のすぐ後ろに続くとき「1-2回戦」「3-4位」「5-6年」の数字は時間ではない（空白をはさめば時間）
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function cal() { return (root.SITE_CONFIG && root.SITE_CONFIG.calendar) || {}; }
@@ -124,16 +124,17 @@
     }
     return p.protocol === 'https:' && p.hostname ? p.href : '';
   }
+  function readable(href) { try { return decodeURI(href); } catch (e) { return href; } }   // %E6… を漢字に戻して見せる
   /* 文を「ふつうの文字」と「https のリンク」に分ける。返すもの：[{ text }, { text, href }, …]（http: や javascript: はリンクにしない） */
   function splitLinks(text) {
-    var out = [], last = 0, m, re = /https:\/\/[A-Za-z0-9\-._~:\/?#\[\]@!$&'()*+,;=%]+/gi;
+    var out = [], last = 0, m, re = /https:\/\/[^\s（）「」『』【】、。，．！？<>"]+/gi;   // 空白・全角の括弧・全角の句読点で切る（漢字などはリンクに含める）
     text = String(text == null ? '' : text);
     while ((m = re.exec(text))) {
       var raw = m[0].replace(/[.,;:!?'")\]]+$/, '');          // 文末の「。」「)」などは、リンクに含めない
       var href = safeHref(raw);
       if (!href) continue;
       if (m.index > last) out.push({ text: text.slice(last, m.index) });
-      out.push({ text: href, href: href });
+      out.push({ text: raw.indexOf('google.com/url') < 0 ? raw : readable(href), href: href });   // 見せる文字は、打たれたままの形（包みは外した形）
       last = m.index + raw.length;
       re.lastIndex = last;
     }
@@ -168,7 +169,8 @@
         walk(n);
         if (tag === 'A') {
           var href = safeHref(n.getAttribute('href') || '');       // Googleの包みは外す。https 以外は出さない
-          if (href && n.textContent.indexOf(href) < 0 && n.textContent.indexOf(href.replace(/\/$/, '')) < 0) out.push('（' + href + '）');   // 文字と行き先がちがうときは、行き先も残す
+          var shown = n.textContent;
+          if (href && shown.indexOf(href) < 0 && shown.indexOf(href.replace(/\/$/, '')) < 0 && shown.indexOf(readable(href)) < 0 && shown.indexOf(readable(href).replace(/\/$/, '')) < 0) out.push('（' + href + '）');   // 文字と行き先がちがうときは、行き先も残す
         }
         if (block) out.push('\n');
       }
