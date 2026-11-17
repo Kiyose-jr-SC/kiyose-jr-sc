@@ -212,7 +212,8 @@ button { font: inherit; color: inherit; }
   position: absolute; left: clamp(-92px, -7vw, -40px); bottom: clamp(-44px, -3vw, -26px); width: clamp(104px, 14vw, 184px); height: auto;
   filter: drop-shadow(0 10px 18px rgba(9, 23, 48, .55));
 }
-@media (max-width: 899px) { .hero-emblem { left: auto; right: 10px; top: -34px; width: 104px; } .hero-photo { margin-top: 20px; } }
+/* スマホ：エンブレムは写真の下の端（顔より下）に置く。写真の上の角には置かない */
+@media (max-width: 899px) { .hero-emblem { left: auto; right: 10px; top: auto; bottom: -34px; width: 96px; } .hero-photo { margin-top: 20px; } }
 
 /* 試合結果のバー（モックの形）：紺の地に、上に山吹の太い線。左「2026 RESULT／U-12」・中央に大会名・
    右に山吹の大きな「準優勝」と、端に下線つきのリンク。スマホは縦に積む（「準優勝」は割れない） */
