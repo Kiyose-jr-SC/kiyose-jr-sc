@@ -15,6 +15,9 @@
   var MARKS = '幼①②③④⑤⑥';                         // 学年の印（schedule.js の gradesFrom と同じもの）
   var TIME = '\\d{1,2}(?::\\d{2}|時\\d{1,2}分?|時半|半|時)?';   // 13 / 13:30 / 13時 / 13時30分 / 7半 / 12時半
 
+  var HOUR_MIN = 6, HOUR_MAX = 23;                      // タイトルから時間として読む範囲（6時〜23時台）
+  var NOT_TIME_AFTER = /^\s*[回節位年組番戦本点人日月]/;  // 「1-2回戦」「3-4位」の数字は時間ではない
+
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function cal() { return (root.SITE_CONFIG && root.SITE_CONFIG.calendar) || {}; }
 
@@ -34,23 +37,23 @@
     var m = /^(\d{1,2})(?::(\d{2})|時(\d{1,2})分?|時半|半|時)?$/.exec(token);
     if (!m) return null;
     var h = +m[1], mi = m[2] != null ? +m[2] : (m[3] != null ? +m[3] : (/半/.test(token) ? 30 : 0));
-    if (h > 24 || mi > 59) return null;
+    if (h < HOUR_MIN || h > HOUR_MAX || mi > 59) return null;   // 練習のある時間帯だけ。「1-2回戦」「第1-2節」を時間と読まない
     return { h: h, mi: mi, text: pad(h) + ':' + pad(mi) };
   }
 
   /* 文の中の「13〜15」「12:30〜17」「7半〜14」「18-21」「13時から」を探す（いちばん後ろのもの） */
   function findTime(s) {
     var best = null, m;
-    var range = new RegExp('(^|[^\\d:])(' + TIME + ')\\s*[〜\\-]\\s*(' + TIME + ')', 'g');
+    var range = new RegExp('(^|[^\\d:第])(' + TIME + ')\\s*[〜\\-]\\s*(' + TIME + ')', 'g');
     while ((m = range.exec(s))) {
       var a = hm(m[2]), b = hm(m[3]);
-      if (a && b && (b.h * 60 + b.mi) > (a.h * 60 + a.mi)) {
+      if (a && b && (b.h * 60 + b.mi) > (a.h * 60 + a.mi) && !NOT_TIME_AFTER.test(s.slice(m.index + m[0].length))) {
         best = { start: a.text, end: b.text, from: m.index + m[1].length, to: m.index + m[0].length };
       }
       range.lastIndex = m.index + m[1].length + 1;
     }
     if (best) return best;
-    var open = new RegExp('(^|[^\\d:])(' + TIME + ')\\s*(?:〜|から)\\s*$');
+    var open = new RegExp('(^|[^\\d:第])(' + TIME + ')\\s*(?:〜|から)\\s*$');
     m = open.exec(s);
     if (m && hm(m[2])) return { start: hm(m[2]).text, end: '', from: m.index + m[1].length, to: m.index + m[0].length };
     return null;
@@ -110,6 +113,34 @@
     return null;
   }
 
+  /* ---------- リンク ---------- */
+  /* Googleカレンダーが説明のリンクを包む形（google.com/url?q=…）を元のURLに戻す。https のURLだけ返し、それ以外は '' */
+  function safeHref(u) {
+    var p;
+    try { p = new URL(u); } catch (e) { return ''; }
+    if ((p.hostname === 'www.google.com' || p.hostname === 'google.com') && p.pathname === '/url') {
+      var inner = p.searchParams.get('q') || p.searchParams.get('url') || '';
+      try { p = new URL(inner); } catch (e) { return ''; }
+    }
+    return p.protocol === 'https:' && p.hostname ? p.href : '';
+  }
+  /* 文を「ふつうの文字」と「https のリンク」に分ける。返すもの：[{ text }, { text, href }, …]（http: や javascript: はリンクにしない） */
+  function splitLinks(text) {
+    var out = [], last = 0, m, re = /https:\/\/[A-Za-z0-9\-._~:\/?#\[\]@!$&'()*+,;=%]+/gi;
+    text = String(text == null ? '' : text);
+    while ((m = re.exec(text))) {
+      var raw = m[0].replace(/[.,;:!?'")\]]+$/, '');          // 文末の「。」「)」などは、リンクに含めない
+      var href = safeHref(raw);
+      if (!href) continue;
+      if (m.index > last) out.push({ text: text.slice(last, m.index) });
+      out.push({ text: href, href: href });
+      last = m.index + raw.length;
+      re.lastIndex = last;
+    }
+    if (last < text.length) out.push({ text: text.slice(last) });
+    return out;
+  }
+
   /* ---------- 説明（HTML）→ ふつうの文字 ---------- */
   var BLOCK = /^(P|DIV|H[1-6]|UL|OL|LI|TR|TABLE|BLOCKQUOTE|PRE)$/;
   function htmlToText(html) {
@@ -136,8 +167,8 @@
         if (tag === 'LI') out.push('・');
         walk(n);
         if (tag === 'A') {
-          var href = n.getAttribute('href') || '';
-          if (/^https?:\/\//i.test(href) && n.textContent.indexOf(href) < 0) out.push('（' + href + '）');   // 文字と行き先がちがうときは、行き先も残す
+          var href = safeHref(n.getAttribute('href') || '');       // Googleの包みは外す。https 以外は出さない
+          if (href && n.textContent.indexOf(href) < 0 && n.textContent.indexOf(href.replace(/\/$/, '')) < 0) out.push('（' + href + '）');   // 文字と行き先がちがうときは、行き先も残す
         }
         if (block) out.push('\n');
       }
@@ -175,5 +206,5 @@
     });
   }
 
-  root.ScheduleParse = { fromGoogle: fromGoogle, parseTitle: parseTitle, htmlToText: htmlToText };
+  root.ScheduleParse = { fromGoogle: fromGoogle, parseTitle: parseTitle, htmlToText: htmlToText, splitLinks: splitLinks };
 })(window);

@@ -17,9 +17,12 @@
   function isHttps(u) { return typeof u === 'string' && /^https:\/\//.test(u); }
   /* https で、ホストが許可リストに合うURLだけ通す（それ以外は無かったことにする） */
   function parseUrl(u) { try { return new URL(u); } catch (e) { return null; } }
-  function isGoogleFormUrl(u) {
+  /* Googleフォームか。allowShort が true のときは、短縮URL（forms.gle）も通す（埋め込み embedUrl は docs.google.com だけ） */
+  function isGoogleFormUrl(u, allowShort) {
     var p = isHttps(u) && parseUrl(u);
-    return !!p && p.hostname === 'docs.google.com' && /^\/forms\//.test(p.pathname);
+    if (!p) return false;
+    if (p.hostname === 'docs.google.com' && /^\/forms\//.test(p.pathname)) return true;
+    return !!allowShort && p.hostname === 'forms.gle' && p.pathname.length > 1;
   }
   function isLineUrl(u) {
     var p = isHttps(u) && parseUrl(u);
@@ -244,7 +247,7 @@
         emb.appendChild(frame);
         var fallback = el('p', 'form-embed-note', 'うまく表示されないときは、');
         var fa = el('a', 'text-link', 'こちらから開けます');
-        fa.href = isHttps(c.viewUrl) ? c.viewUrl : formViewSrc(c.embedUrl);
+        fa.href = isGoogleFormUrl(c.viewUrl, true) ? c.viewUrl : formViewSrc(c.embedUrl);
         fa.target = '_blank'; fa.rel = 'noopener';
         fallback.appendChild(fa);
         fallback.appendChild(document.createTextNode('。'));
@@ -253,7 +256,7 @@
         return;
       }
       /* ② embedUrl が無く viewUrl があるとき：フォームを開くボタン */
-      if (isHttps(c.viewUrl)) {
+      if (isGoogleFormUrl(c.viewUrl, true)) {
         var box = el('div', 'form-open');
         box.appendChild(el('p', null, key === 'absence'
           ? '欠席・遅刻のご連絡は、こちらのフォームから送れます。'

@@ -123,7 +123,16 @@
       var v = el('p', 'ev-venue', '場所：' + e.venue);
       box.appendChild(v);
     }
-    if (e.detail) box.appendChild(el('p', 'ev-text', e.detail));
+    if (e.detail) {
+      var tx = el('p', 'ev-text');
+      window.ScheduleParse.splitLinks(e.detail).forEach(function (part) {
+        if (!part.href) { tx.appendChild(document.createTextNode(part.text)); return; }
+        var a = el('a', 'text-link', part.text);      // textContent と href だけで作る（innerHTML は使わない）
+        a.href = part.href; a.target = '_blank'; a.rel = 'noopener';
+        tx.appendChild(a);
+      });
+      box.appendChild(tx);
+    }
     var acts = el('div', 'ev-actions');
     var g = el('a', 'btn btn-navy btn-sm', 'Googleカレンダーに追加');
     g.href = googleUrl(e); g.target = '_blank'; g.rel = 'noopener';
