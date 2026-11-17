@@ -45,8 +45,8 @@ window.SITE_CONFIG = {
    */
   sheets: {
     spreadsheetId: '1PJjT4XZpFbunYotZt-mq1Nk3l1Rp2EFURY3lPRTp5ww', // 控え（シートの場所）
-    newsCsvUrl: '',     // 例）https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=0&single=true&output=csv
-    resultsCsvUrl: '',  // 例）https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=123&single=true&output=csv
+    newsCsvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjpjf_EgSPf85RrLMmFuhzpThad0H0DS2ntjhZuFnVmNSNnXgyjF0tMdzzTv_hVur3vk-Ueh9mkxXW/pub?gid=0&single=true&output=csv',     // 例）https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=0&single=true&output=csv
+    resultsCsvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjpjf_EgSPf85RrLMmFuhzpThad0H0DS2ntjhZuFnVmNSNnXgyjF0tMdzzTv_hVur3vk-Ueh9mkxXW/pub?gid=1&single=true&output=csv',  // 例）https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=123&single=true&output=csv
     // 欠席連絡ログの選手名を守るため、「リンクを知っている全員が閲覧可」の共有で読む方法は用意していません。
     // 必ず、上の「ウェブに公開」をタブごとに行ってください。
     // お知らせタブの列：日付｜カテゴリ｜タイトル｜詳細｜掲載状態（「公開中」の行だけ表示）
@@ -137,13 +137,13 @@ window.SITE_CONFIG = {
    */
   forms: {
     absence: {
-      embedUrl: '',   // 例）https://docs.google.com/forms/d/e/1FAIpQLS…/viewform?embedded=true
+      embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSccRSeoWBGjVbtGUeAOyrf153emEXxwrwamQ23qay27F4OzYg/viewform?embedded=true',   // 例）https://docs.google.com/forms/d/e/1FAIpQLS…/viewform?embedded=true
       viewUrl: '',    // 例）https://forms.gle/…
       action: '',
       fields: { grade: '', name: '', date: '', type: '', note: '' }
     },
     contact: {
-      embedUrl: '',   // 例）https://docs.google.com/forms/d/e/1FAIpQLS…/viewform?embedded=true
+      embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSen7nAOaKsxfdvmDb7h2PbZJ6iBsQf6FVijrTWsgu_XMioUuA/viewform?embedded=true',   // 例）https://docs.google.com/forms/d/e/1FAIpQLS…/viewform?embedded=true
       viewUrl: '',    // 例）https://forms.gle/…
       action: '',
       fields: { name: '', email: '', subject: '', body: '' }
