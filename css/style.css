@@ -86,11 +86,12 @@ button { font: inherit; color: inherit; }
 .btn-ghost:hover { background: rgba(255,255,255,.1); }
 .btn-line { background: transparent; color: var(--navy); box-shadow: inset 0 -3px 0 var(--navy); border-radius: 0; }
 .btn-line:hover { background: var(--navy); color: var(--white); }
-.btn-chat { background: #06c755; color: var(--navy-deep); }   /* LINEの緑。文字は濃紺（白だと読みにくい：緑×濃紺は約8:1） */
-.btn-chat:hover { background: #2fdc77; }
-.btn-chat::before { content: ""; flex: none; width: 20px; height: 15px; background: var(--navy-deep); border-radius: 10px 3px 3px 3px; }   /* 吹き出し。左上だけ丸い */
-.cta-band .btn-chat { box-shadow: inset 0 0 0 2px var(--navy-deep); }   /* 黄色の上では輪郭線を足す */
 .btn-sm { min-height: 46px; padding: .5rem 1.2rem; font-size: .9375rem; }
+/* LINE公式の「友だち追加」ボタン（LINEが配っている画像 232×72 をそのまま使う。色・文字に手を加えない）。
+   隣のボタンと同じ60pxの高さに縮めて表示（引き伸ばさない）。タップできる範囲は44px以上 */
+.line-add { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; line-height: 0; text-decoration: none; transition: transform .18s ease; }
+.line-add:hover { transform: translateY(-2px); }
+.line-add img { display: block; height: 60px; width: auto; max-width: 100%; }
 .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
 .arrow::after { content: "→"; font-family: var(--num); font-weight: 700; transition: transform .18s ease; }
 .btn:hover .arrow::after, a:hover > .arrow::after { transform: translateX(4px); }
@@ -303,7 +304,6 @@ button { font: inherit; color: inherit; }
 .sec.yellow .big-offer em { box-shadow: inset 0 -.36em 0 rgba(15, 36, 71, .2); }
 .sec.yellow .dates { gap: 14px; }
 .sec.yellow .dates > li, .sec.yellow .dates > li:last-child { background: var(--white); border: 0; padding: 1.1rem 1.4rem; border-top-left-radius: 22px; box-shadow: 0 8px 24px rgba(9, 23, 48, .1); }
-.sec.yellow .btn-chat { box-shadow: inset 0 0 0 2px var(--navy-deep); }   /* 山吹の上では輪郭線を足す */
 @media (max-width: 560px) { .sec.yellow .dates > li { grid-template-columns: minmax(0, 1fr); padding-inline: 1.1rem; } }   /* スマホ：日付の下に会の名前と時間（「13:00〜15:00」が割れない） */
 
 /* ---------- お知らせ ---------- */
@@ -393,7 +393,7 @@ button { font: inherit; color: inherit; }
 .cta-band { background: var(--yellow); color: var(--navy-deep); }
 .cta-band .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.2rem 2rem; padding-block: clamp(30px, 5vw, 52px); }
 .cta-band h2 { font-size: clamp(1.4rem, 3.2vw, 2rem); }
-.cta-band .btn-navy, .cta-band .btn-chat { min-height: 58px; }
+.cta-band .btn-navy { min-height: 58px; }
 .cta-btns { display: flex; flex-wrap: wrap; gap: .8rem 1rem; }
 
 /* ---------- 保護者ページ：予定 ---------- */
@@ -514,11 +514,11 @@ button { font: inherit; color: inherit; }
 .form-embed-note a { color: var(--ink); }
 /* LINEの入口（お問い合わせページ、フォームの上） */
 .line-box { display: grid; gap: .5rem 2rem; align-items: center; margin-block: 0 clamp(26px, 4vw, 40px); padding-block: 1.1rem 1.3rem; border-top: 2px solid var(--navy); border-bottom: 1px solid var(--line); }
-@media (min-width: 760px) { .line-box { grid-template-columns: minmax(0, 1fr) auto; } .line-box .btn { grid-row: 1 / span 2; grid-column: 2; } }
+@media (min-width: 760px) { .line-box { grid-template-columns: minmax(0, 1fr) auto; } .line-box .line-add { grid-row: 1 / span 2; grid-column: 2; } }
 .line-box-t { font-weight: 900; font-size: 1.125rem; }
 .line-box-x { color: var(--muted); font-size: .9375rem; }
-.line-box .btn { justify-self: start; margin-top: .5rem; }
-@media (min-width: 760px) { .line-box .btn { margin-top: 0; } }
+.line-box .line-add { justify-self: start; margin-top: .5rem; }
+@media (min-width: 760px) { .line-box .line-add { margin-top: 0; } }
 
 /* ---------- 活動場所 ---------- */
 .venues { display: grid; gap: clamp(20px, 3vw, 36px); }
@@ -555,8 +555,10 @@ button { font: inherit; color: inherit; }
 .foot-nav a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-weight: 700; background: linear-gradient(var(--yellow), var(--yellow)) 0 calc(100% - 8px) / 0 3px no-repeat; transition: background-size .2s; }
 .foot-nav a:hover { background-size: 100% 3px; color: var(--white); }
 @media (max-width: 899px) { .foot-nav { gap: 0 1.6rem; } }
-.foot-sns { display: flex; gap: 1.2rem; margin-top: 1rem; }
+.foot-sns { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem 1.2rem; margin-top: 1rem; }
 .foot-sns a { display: inline-flex; align-items: center; min-height: 44px; color: var(--white); font-weight: 700; text-decoration: none; background: linear-gradient(var(--yellow), var(--yellow)) 0 calc(100% - 8px) / 100% 3px no-repeat; }
+.foot-sns .line-add { background: none; }
+.foot-sns .line-add img { height: 44px; }
 .copy { margin-top: clamp(26px, 4vw, 44px); padding-top: 1.2rem; border-top: 1px solid rgba(255,255,255,.2); font-size: .875rem; }
 
 @media (prefers-reduced-motion: reduce) {
