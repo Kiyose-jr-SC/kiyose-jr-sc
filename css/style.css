@@ -92,6 +92,8 @@ button { font: inherit; color: inherit; }
 .line-add { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; line-height: 0; text-decoration: none; transition: transform .18s ease; }
 .line-add:hover { transform: translateY(-2px); }
 .line-add img { display: block; height: 60px; width: auto; max-width: 100%; }
+/* SNSのロゴ（simple-icons のグリフ。形は変えない）：紺の地では白、白い地では黒 */
+.soc-ico { flex: none; display: inline-block; width: 1.2em; height: 1.2em; margin-right: .5em; fill: currentColor; vertical-align: -.2em; }
 .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
 .arrow::after { content: "→"; font-family: var(--num); font-weight: 700; transition: transform .18s ease; }
 .btn:hover .arrow::after, a:hover > .arrow::after { transform: translateX(4px); }
@@ -534,13 +536,15 @@ button { font: inherit; color: inherit; }
 /* ---------- リンク集・SNS ---------- */
 .linkset { display: grid; gap: 0; border-top: 2px solid var(--navy); }
 .linkset li { border-bottom: 1px solid var(--line); }
-.linkset a, .linkset span { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.05rem .2rem; text-decoration: none; font-weight: 700; }
+.linkset a, .linkset span { display: flex; justify-content: flex-start; align-items: center; gap: 1rem; padding: 1.05rem .2rem; text-decoration: none; font-weight: 700; }
+.linkset .soc-ico { color: #000; }   /* 白い地の上：黒のグリフ */
 .linkset a:hover { background: rgba(250, 204, 21, .25); }
-.linkset a::after { content: "↗"; font-family: var(--num); font-size: 1.3rem; }
+.linkset a::after { content: "↗"; font-family: var(--num); font-size: 1.3rem; margin-left: auto; }
 .linkset span { color: var(--muted); }
 .sns-row { display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; margin-top: 1.6rem; }
 .sns-row a { display: inline-flex; align-items: center; min-height: 54px; padding: .6rem 1.6rem; text-decoration: none; font-weight: 900; background: var(--white); color: var(--navy-deep); border-top-left-radius: 26px; border-radius: 3px 3px 3px 3px; border-top-left-radius: 26px; transition: background-color .18s, transform .18s; }
 .sns-row a:hover { background: var(--yellow); transform: translateY(-2px); }
+.sns-row a:not(.btn) .soc-ico { color: #000; }   /* 白いボタンの上：黒のグリフ（紺のボタンの上は、文字と同じ白） */
 
 /* ---------- フッター ---------- */
 .site-footer { background: var(--navy-deep); color: #cbd5e1; padding-block: clamp(40px, 6vw, 72px) 26px; }
