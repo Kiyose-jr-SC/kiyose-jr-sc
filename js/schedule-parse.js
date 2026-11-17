@@ -124,17 +124,40 @@
     }
     return p.protocol === 'https:' && p.hostname ? p.href : '';
   }
-  function readable(href) { try { return decodeURI(href); } catch (e) { return href; } }   // %E6… を漢字に戻して見せる
+  /*
+   * URLの終わり：「ここで止める」文字を決める（漢字とカタカナは残す）。
+   *   空白・改行／U+2000〜206F（“”・ゼロ幅・向きを変える制御文字など）／U+3000〜303F（全角の記号・句読点・括弧）／
+   *   ひらがな U+3040〜309F／「・」U+30FB／全角の英数・記号 U+FF00〜FFEF／ < > " ／ 制御文字・書式文字
+   */
+  var STOP = '\\s\\u2000-\\u206F\\u3000-\\u303F\\u3040-\\u309F\\u30FB\\uFF00-\\uFFEF\\uFEFF\\u180E<>"';
+  var STOP_UNICODE = '\\p{Cc}\\p{Cf}\\p{Z}';                // 古い端末で使えないときは、上の範囲だけで止める
+  function stopFlags() { try { new RegExp('[' + STOP_UNICODE + ']', 'u'); return { cls: STOP + STOP_UNICODE, flag: 'u' }; } catch (e) { return { cls: STOP, flag: '' }; } }
+  function count(s, c) { return s.split(c).length - 1; }
+  function trimTail(u) {                                     // 文末の記号を外す。( ) が対になっているときの ) は残す
+    for (;;) {
+      var c = u.charAt(u.length - 1);
+      if (c && '.,;:!?\'"'.indexOf(c) >= 0) u = u.slice(0, -1);
+      else if (c === ')' && count(u, ')') > count(u, '(')) u = u.slice(0, -1);
+      else if (c === ']' && count(u, ']') > count(u, '[')) u = u.slice(0, -1);
+      else return u;
+    }
+  }
+  /* 見せる文字：%E6… を漢字に戻す。ただし、戻した中に「止める文字」（制御文字・空白など）が入るときは、エンコード済みのまま見せる */
+  function shown(href) {
+    var f = stopFlags(), r;
+    try { r = decodeURI(href); } catch (e) { return href; }
+    return new RegExp('[' + f.cls + ']', f.flag).test(r) ? href : r;
+  }
   /* 文を「ふつうの文字」と「https のリンク」に分ける。返すもの：[{ text }, { text, href }, …]（http: や javascript: はリンクにしない） */
   function splitLinks(text) {
-    var out = [], last = 0, m, re = /https:\/\/[^\s（）「」『』【】、。，．！？<>"]+/gi;   // 空白・全角の括弧・全角の句読点で切る（漢字などはリンクに含める）
+    var f = stopFlags(), out = [], last = 0, m, re = new RegExp('https://[^' + f.cls + ']+', 'gi' + f.flag);
     text = String(text == null ? '' : text);
     while ((m = re.exec(text))) {
-      var raw = m[0].replace(/[.,;:!?'")\]]+$/, '');          // 文末の「。」「)」などは、リンクに含めない
+      var raw = trimTail(m[0]);                              // 文末の「.」「)」などは、リンクに含めない
       var href = safeHref(raw);
       if (!href) continue;
       if (m.index > last) out.push({ text: text.slice(last, m.index) });
-      out.push({ text: raw.indexOf('google.com/url') < 0 ? raw : readable(href), href: href });   // 見せる文字は、打たれたままの形（包みは外した形）
+      out.push({ text: shown(href), href: href });
       last = m.index + raw.length;
       re.lastIndex = last;
     }
@@ -169,8 +192,8 @@
         walk(n);
         if (tag === 'A') {
           var href = safeHref(n.getAttribute('href') || '');       // Googleの包みは外す。https 以外は出さない
-          var shown = n.textContent;
-          if (href && shown.indexOf(href) < 0 && shown.indexOf(href.replace(/\/$/, '')) < 0 && shown.indexOf(readable(href)) < 0 && shown.indexOf(readable(href).replace(/\/$/, '')) < 0) out.push('（' + href + '）');   // 文字と行き先がちがうときは、行き先も残す
+          var label = n.textContent, plain = href && shown(href);
+          if (href && label.indexOf(href) < 0 && label.indexOf(href.replace(/\/$/, '')) < 0 && label.indexOf(plain) < 0 && label.indexOf(plain.replace(/\/$/, '')) < 0) out.push('（' + href + '）');   // 文字と行き先がちがうときは、行き先も残す
         }
         if (block) out.push('\n');
       }
