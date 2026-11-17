@@ -1,6 +1,7 @@
 /*
  * 活動予定（リスト表示・月カレンダー・学年の絞り込み・自分のカレンダーに追加）
  * 設定は ../config.js、Googleカレンダーがつながる前の控えは ../content/events.js にあります。
+ * Googleカレンダーの予定の読み解き（学年の印・時間・会場・説明）は schedule-parse.js です。
  */
 (function () {
   'use strict';
@@ -24,7 +25,7 @@
   var todayKey = key(today);
 
   var DAYS_FIRST = 8;
-  var state = { events: [], view: 'list', grade: 'all', showPast: false, showAll: false, month: { y: today.y, m: today.m } };
+  var state = { events: [], fromCalendar: false, view: 'list', grade: 'all', showPast: false, showAll: false, month: { y: today.y, m: today.m } };
 
   /* ---------- 予定のそろえ方 ---------- */
   function gradesFrom(text) {
@@ -44,20 +45,7 @@
     }).filter(function (e) { return U.parseYMD(e.date); })
       .sort(function (a, b) { return (a.date + (a.start || '99')).localeCompare(b.date + (b.start || '99')); });
   }
-  function jstParts(iso) {
-    var d = new Date(new Date(iso).getTime() + 9 * 3600 * 1000);
-    return { date: d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()), time: pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) };
-  }
-  function fromGoogle(items) {
-    return items.filter(function (it) { return it.status !== 'cancelled' && it.start; }).map(function (it) {
-      var s = it.start, e = it.end || {}, out = { title: it.summary || '', venue: it.location || '', detail: it.description || '', who: '' };
-      if (s.dateTime) {
-        var a = jstParts(s.dateTime), b = e.dateTime ? jstParts(e.dateTime) : null;
-        out.date = a.date; out.start = a.time; out.end = b && b.date === a.date ? b.time : '';
-      } else { out.date = s.date; out.start = ''; out.end = ''; }
-      return out;
-    });
-  }
+  var fromGoogle = (window.ScheduleParse || {}).fromGoogle;   // Googleカレンダーの読み解きは js/schedule-parse.js
 
   /* ---------- 見た目の部品 ---------- */
   function dayLabel(dateStr) {
@@ -293,7 +281,8 @@
     ui.past.textContent = state.showPast ? '過去の予定を隠す' : '過去の予定も見る';
     ui.body.textContent = '';
     ui.body.className = 'sch-body view-' + state.view;
-    if (state.view === 'list') renderList(ui.body); else renderCal(ui.body);
+    if (state.fromCalendar && !state.events.length) ui.body.appendChild(el('p', 'empty', 'この期間の予定はまだありません。'));
+    else if (state.view === 'list') renderList(ui.body); else renderCal(ui.body);
   }
   function openSubscribe() {
     var box = el('div', 'sub-box');
@@ -312,12 +301,25 @@
     SiteDialog.open('自分のカレンダーに追加', box);
   }
 
-  function start(list) {
+  function start(list, fromCalendar) {
     state.events = normalize(list);
+    state.fromCalendar = !!fromCalendar;
     buildFrame();
     render();
   }
-  function useFallback() { start(window.FALLBACK_EVENTS || []); }
+  function useFallback() { start(window.FALLBACK_EVENTS || [], false); }
+  /* カレンダーを設定しているのに読めなかったとき：古い控えは出さず、お知らせして開き先を添える */
+  function showLoadError() {
+    host.textContent = '';
+    var box = el('div', 'sch-error');
+    box.setAttribute('role', 'alert');
+    box.appendChild(el('p', 'empty', '予定を読み込めませんでした。少し時間をおいて開き直してください。'));
+    var a = el('a', 'btn btn-navy', 'Googleカレンダーで開く');
+    a.href = 'https://calendar.google.com/calendar/embed?src=' + encodeURIComponent(CAL.calendarId);
+    a.target = '_blank'; a.rel = 'noopener';
+    box.appendChild(a);
+    host.appendChild(box);
+  }
 
   if (CAL.calendarId && CAL.apiKey) {
     var min = new Date(today.y, today.m - 2, 1).toISOString();
@@ -325,8 +327,11 @@
     var url = 'https://www.googleapis.com/calendar/v3/calendars/' + encodeURIComponent(CAL.calendarId) +
       '/events?key=' + encodeURIComponent(CAL.apiKey) + '&singleEvents=true&orderBy=startTime&maxResults=500' +
       '&timeMin=' + encodeURIComponent(min) + '&timeMax=' + encodeURIComponent(max);
-    fetch(url).then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
-      .then(function (j) { var l = fromGoogle(j.items || []); if (!l.length) throw new Error('empty'); start(l); })
-      .catch(useFallback);
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 10000);
+    fetch(url, ctl ? { signal: ctl.signal } : {})
+      .then(function (r) { clearTimeout(timer); if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .then(function (j) { start(fromGoogle(j.items || []), true); })
+      .catch(showLoadError);
   } else { useFallback(); }
 })();

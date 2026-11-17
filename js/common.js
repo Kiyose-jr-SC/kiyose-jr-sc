@@ -116,13 +116,7 @@
   function sheetUrl(kind) {
     var s = CFG.sheets || {};
     var direct = kind === 'news' ? s.newsCsvUrl : s.resultsCsvUrl;
-    if (direct) return isHttps(direct) ? direct : '';
-    if (s.useSharedLinkInstead && s.spreadsheetId) {
-      var tab = kind === 'news' ? s.tabNews : s.tabResults;
-      return 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(s.spreadsheetId) +
-        '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(tab);
-    }
-    return '';
+    return direct && isHttps(direct) ? direct : '';
   }
   function loadSheet(kind) {
     var url = sheetUrl(kind);
