@@ -82,6 +82,8 @@ button { font: inherit; color: inherit; }
 .btn-yellow:hover { background: #ffd93a; }
 .btn-navy { background: var(--navy); color: var(--white); }
 .btn-navy:hover { background: var(--navy-mid); }
+.btn-ghost { background: transparent; color: var(--white); box-shadow: inset 0 0 0 1px rgba(255,255,255,.55); }   /* 紺の地の上の、2つ目のボタン */
+.btn-ghost:hover { background: rgba(255,255,255,.1); }
 .btn-line { background: transparent; color: var(--navy); box-shadow: inset 0 -3px 0 var(--navy); border-radius: 0; }
 .btn-line:hover { background: var(--navy); color: var(--white); }
 .btn-chat { background: #06c755; color: var(--navy-deep); }   /* LINEの緑。文字は濃紺（白だと読みにくい：緑×濃紺は約8:1） */
@@ -147,17 +149,21 @@ button { font: inherit; color: inherit; }
 .sec.white { background: var(--white); }
 .sec.navy { background: var(--navy); color: var(--white); }
 .sec.deep { background: var(--navy-deep); color: var(--white); }
+.sec.yellow { background: var(--yellow); color: var(--navy-deep); }   /* 体験会の段：山吹のベタに紺の文字（白文字は使わない） */
+.yellow .no { color: var(--navy); }
+.yellow .sh .sub, .yellow .note { color: rgba(9, 23, 48, .82); }
+/* 見出しの上に、山吹の線（3px × 48px）。番号は紺（紺の地では山吹、山吹の地では紺） */
 .sh {
   position: relative; display: flex; align-items: baseline; flex-wrap: wrap; gap: .1rem .7rem;
-  padding-top: 1.1rem; border-top: 2px solid var(--navy); margin-bottom: clamp(26px, 4vw, 48px);
+  padding-top: 1.4rem; margin-bottom: clamp(26px, 4vw, 48px);
 }
-.sh::before { content: ""; position: absolute; left: 0; top: -2px; width: 4.5rem; height: 6px; background: var(--yellow); }
-.on-dark .sh, .navy .sh, .deep .sh { border-top-color: rgba(255,255,255,.55); }
+.sh::before { content: ""; position: absolute; left: 0; top: 0; width: 48px; height: 3px; background: var(--yellow); }
+.yellow .sh::before { background: var(--navy); }   /* 山吹の地の上では、線を紺に */
 .no {
   font-family: var(--num); font-weight: 800; font-size: clamp(2.7rem, 7vw, 4.2rem); line-height: 1; letter-spacing: .02em;
-  color: var(--navy); box-shadow: inset 0 -.3em 0 var(--yellow); padding-inline: .06em; flex: none;
+  color: var(--navy); flex: none;
 }
-.navy .no, .deep .no { color: var(--yellow); box-shadow: none; }
+.navy .no, .deep .no { color: var(--yellow); }
 .sh h2 { font-size: clamp(1.55rem, 3.6vw, 2.4rem); }
 .sh .sub { flex-basis: 100%; color: var(--muted); font-size: 1rem; font-weight: 500; margin-top: .4rem; }
 .navy .sh .sub, .deep .sh .sub { color: #cbd5e1; }
@@ -183,8 +189,17 @@ button { font: inherit; color: inherit; }
   content: ""; position: absolute; width: min(70vw, 640px); aspect-ratio: 1; border-radius: 50%;
   border: 2px solid rgba(255,255,255,.09); left: -14%; bottom: -34%; pointer-events: none;
 }
-.hero-grid { display: grid; gap: clamp(26px, 5vw, 64px); padding-block: clamp(30px, 6vw, 84px) clamp(52px, 7vw, 96px); align-items: center; position: relative; }
-@media (min-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } .hero h1 { font-size: clamp(2.2rem, 4.1vw, 3.3rem); } }
+/* ヒーロー（B案）：紺の地に、文字は左・写真は右。写真には影（スクリム）をかけず、顔は明るいまま。
+   熱量は写真の大きさで出す。スマホでは、文字→写真と縦に並べる（どちらも顔に重ならない） */
+.hero .eyebrow { display: flex; align-items: center; gap: 14px; }
+.hero .eyebrow::before { content: ""; flex: none; width: 46px; height: 3px; background: var(--yellow); }
+@media (max-width: 520px) { .hero .eyebrow { gap: 10px; font-size: .8125rem; letter-spacing: .1em; } .hero .eyebrow::before { width: 24px; } }
+.hero-grid { display: grid; gap: clamp(26px, 5vw, 64px); padding-block: clamp(34px, 6vw, 84px) clamp(56px, 7vw, 96px); align-items: center; position: relative; }
+@media (min-width: 900px) {
+  .hero { min-height: 86vh; display: flex; align-items: center; }
+  .hero-grid { grid-template-columns: minmax(0, .85fr) minmax(0, 1.25fr); width: 100%; }
+  .hero h1 { font-size: clamp(2.2rem, 4.1vw, 3.3rem); }
+}
 .hero h1 { font-size: clamp(1.95rem, 7.4vw, 3rem); line-height: 1.32; margin-top: .6rem; letter-spacing: .02em; }
 .hero h1 .y { color: var(--yellow); }
 .hero .lead { margin-top: clamp(14px, 2vw, 24px); font-size: clamp(1rem, 1.7vw, 1.25rem); color: #dbe4f0; }
@@ -193,21 +208,23 @@ button { font: inherit; color: inherit; }
 .on-dark .text-link, .hero .text-link { color: var(--white); }
 .on-dark .text-link:hover, .hero .text-link:hover { color: var(--navy-deep); }
 .hero-photo { position: relative; margin: 0; }
-@media (min-width: 900px) { .hero-photo { margin-right: calc(var(--gutter) * -1 - max(0px, (100vw - var(--wrap) - 2 * var(--gutter)) / 2)); } .hero-photo .photo { aspect-ratio: 5 / 4; } }
+@media (min-width: 900px) { .hero-photo { margin-right: calc(var(--gutter) * -1 - max(0px, (100vw - var(--wrap) - 2 * var(--gutter)) / 2)); } .hero-photo .photo { aspect-ratio: 4 / 3; } }
 .hero-photo .photo { border-top-left-radius: var(--arc); overflow: hidden; background: var(--navy-deep); aspect-ratio: 4 / 3; }
 .hero-photo .photo img { width: 100%; height: 100%; object-fit: cover; }
 .hero-emblem {
   position: absolute; left: clamp(-92px, -7vw, -40px); bottom: clamp(-44px, -3vw, -26px); width: clamp(104px, 14vw, 184px); height: auto;
   filter: drop-shadow(0 10px 18px rgba(9, 23, 48, .55));
 }
-@media (max-width: 899px) { .hero-emblem { left: auto; right: 10px; top: -34px; width: 104px; } .hero-photo { margin-top: 20px; } }
+/* スマホ：エンブレムは写真の下の端（顔より下）に置く。写真の上の角には置かない */
+@media (max-width: 899px) { .hero-emblem { left: auto; right: 10px; top: auto; bottom: -34px; width: 96px; } .hero-photo { margin-top: 20px; } }
 
-.achieve { background: var(--yellow); color: var(--navy-deep); }
+/* 試合結果のバー：紺の地＋白い文字＋山吹のスコア。上に山吹の線（3px） */
+.achieve { background: var(--navy-deep); color: var(--white); border-top: 3px solid var(--yellow); }
 .achieve .wrap { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1.4rem; padding-block: clamp(16px, 2.6vw, 26px); }
-.achieve .ac-label { font-family: var(--num); font-weight: 800; letter-spacing: .16em; font-size: .9375rem; }
+.achieve .ac-label { font-family: var(--num); font-weight: 800; letter-spacing: .16em; font-size: .9375rem; color: var(--yellow); }
 .achieve .ac-main { font-size: clamp(1.0625rem, 2.2vw, 1.375rem); font-weight: 900; }
-.achieve .ac-main em { font-style: normal; font-size: 1.35em; padding-inline: .1em; box-shadow: inset 0 -.42em 0 rgba(255,255,255,.7); }
-.achieve a { margin-left: auto; font-weight: 700; text-decoration: none; background: linear-gradient(var(--navy-deep), var(--navy-deep)) 0 100% / 100% 3px no-repeat; }
+.achieve .ac-main em { font-style: normal; font-size: 1.45em; padding-inline: .1em; color: var(--yellow); }
+.achieve a { margin-left: auto; font-weight: 700; text-decoration: none; color: var(--white); background: linear-gradient(var(--yellow), var(--yellow)) 0 100% / 100% 3px no-repeat; }
 @media (max-width: 640px) { .achieve a { margin-left: 0; flex-basis: 100%; } }
 
 /* ---------- 写真（左上の弧） ---------- */
@@ -237,19 +254,23 @@ button { font: inherit; color: inherit; }
 .tiles { display: grid; gap: 14px; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .tiles { grid-template-columns: repeat(2, 1fr); gap: 18px; } }
 @media (min-width: 1000px) { .tiles { grid-template-columns: repeat(4, 1fr); } }
+/* 保護者カード：白地＋紺の見出し＋細い線。触れると紺に反転し、上に山吹の線が走る */
 .tile {
-  position: relative; display: block; text-decoration: none; background: var(--navy-mid); color: var(--white);
+  position: relative; display: block; text-decoration: none; background: var(--white); color: var(--ink); border: 1px solid var(--line);
   padding: clamp(20px, 2.6vw, 30px); min-height: 11rem; border-radius: 4px; border-top-left-radius: 44px; overflow: hidden;
-  transition: background-color .2s ease, transform .2s ease;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
 }
-.tile::before { content: ""; position: absolute; left: 0; top: 0; height: 5px; width: 0; background: var(--yellow); transition: width .28s ease; }
-.tile:hover { background: #1d3d7c; transform: translateY(-3px); }
+.tile::before { content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; background: var(--yellow); transition: width .28s ease; }
+.tile:hover { background: var(--navy); border-color: var(--navy); color: var(--white); transform: translateY(-3px); }
 .tile:hover::before { width: 100%; }
-.tile .tn { font-family: var(--num); font-weight: 800; font-size: 3.4rem; line-height: 1; color: var(--yellow); display: block; }
-.tile h3 { font-size: 1.375rem; margin-top: .5rem; }
-.tile p { color: #d4def0; font-size: .9375rem; line-height: 1.7; margin-top: .4rem; padding-right: 2.6rem; }
-.tile .go { position: absolute; right: 1.2rem; bottom: 1rem; font-family: var(--num); font-size: 1.6rem; font-weight: 700; color: var(--yellow); transition: transform .2s; }
-.tile:hover .go { transform: translateX(5px); }
+.tile .tn { font-family: var(--num); font-weight: 800; font-size: 2.6rem; line-height: 1; color: var(--navy); display: block; transition: color .2s ease; }
+.tile:hover .tn { color: var(--yellow); }
+.tile h3 { font-size: 1.375rem; margin-top: .5rem; color: var(--navy); transition: color .2s ease; }
+.tile:hover h3 { color: var(--white); }
+.tile p { color: var(--muted); font-size: .9375rem; line-height: 1.7; margin-top: .4rem; padding-right: 2.6rem; transition: color .2s ease; }
+.tile:hover p { color: #d4def0; }
+.tile .go { position: absolute; right: 1.2rem; bottom: 1rem; font-family: var(--num); font-size: 1.6rem; font-weight: 700; color: var(--navy); transition: transform .2s, color .2s; }
+.tile:hover .go { transform: translateX(5px); color: var(--yellow); }
 
 /* ---------- 体験の案内 ---------- */
 .join-grid { display: grid; gap: clamp(26px, 5vw, 60px); align-items: center; }
@@ -268,6 +289,11 @@ button { font: inherit; color: inherit; }
 .dates .dw { font-weight: 700; }
 .dates .dw span { display: block; font-weight: 500; color: var(--muted); font-size: .9375rem; }
 .note { color: var(--muted); font-size: .9375rem; line-height: 1.8; }
+/* 体験会の段（山吹のベタ）：日付は白いカードに並べる。強調の下線は紺のうすい線（山吹の上では山吹が見えない） */
+.sec.yellow .big-offer em { box-shadow: inset 0 -.36em 0 rgba(15, 36, 71, .2); }
+.sec.yellow .dates { gap: 14px; }
+.sec.yellow .dates > li, .sec.yellow .dates > li:last-child { background: var(--white); border: 0; padding: 1.1rem 1.4rem; border-top-left-radius: 22px; box-shadow: 0 8px 24px rgba(9, 23, 48, .1); }
+.sec.yellow .btn-chat { box-shadow: inset 0 0 0 2px var(--navy-deep); }   /* 山吹の上では輪郭線を足す */
 
 /* ---------- お知らせ ---------- */
 .news { border-top: 1px solid var(--line); }
@@ -279,11 +305,9 @@ button { font: inherit; color: inherit; }
 .nbody { min-width: 0; }
 .nt { font-size: 1.1875rem; line-height: 1.6; margin-top: .35rem; }
 .nx { margin-top: .5rem; color: #1f2d44; font-size: 1rem; line-height: 1.85; white-space: pre-line; }
-.tag { display: inline-block; font-size: .8125rem; font-weight: 700; line-height: 1; padding: .42rem .8rem; border-radius: 2px; border-top-left-radius: 10px; letter-spacing: .04em; }
-.tag-navy { background: var(--navy); color: var(--white); }
-.tag-yellow { background: var(--yellow); color: var(--navy-deep); }
-.tag-red { background: var(--red); color: var(--white); }
-.tag-plain { background: #e3e8ef; color: var(--navy-deep); }
+/* タグは塗りではなく線：紺の細い枠＋下に山吹の線。赤は「変更・中止」など、注意のときだけ */
+.tag { display: inline-block; font-size: .8125rem; font-weight: 700; line-height: 1; padding: .42rem .8rem .36rem; border: 1px solid rgba(15, 36, 71, .32); border-bottom: 3px solid var(--yellow); border-radius: 2px; border-top-left-radius: 10px; letter-spacing: .04em; background: transparent; color: var(--navy-deep); }
+.tag-red { border-color: var(--red); color: var(--red); }
 @media (max-width: 640px) {
   .news-item { grid-template-columns: 1fr; gap: .3rem; }
   .nd { align-items: baseline; }
@@ -310,7 +334,7 @@ button { font: inherit; color: inherit; }
   .r-round { grid-area: round; } .r-res { grid-area: res; } .r-vs { grid-area: vs; } .r-score { grid-area: score; }
 }
 
-.award { display: grid; gap: .3rem 1.4rem; align-items: center; margin-bottom: clamp(30px, 5vw, 52px); }
+.award { display: grid; gap: .3rem 1.4rem; align-items: center; margin-bottom: clamp(30px, 5vw, 52px); border-top: 3px solid var(--yellow); padding-top: 1rem; }   /* 試合結果のバー：上に山吹の線 */
 .award .a-k { font-family: var(--num); letter-spacing: .18em; font-weight: 700; color: var(--yellow); }
 .award .a-n { font-size: clamp(1.1rem, 2.4vw, 1.5rem); font-weight: 900; }
 .award .a-r { font-size: clamp(2.2rem, 7vw, 4rem); font-weight: 900; line-height: 1.15; color: var(--yellow); }
