@@ -509,9 +509,9 @@ button { font: inherit; color: inherit; }
 .form-done { grid-column: 1 / -1; font-weight: 900; color: var(--navy); }
 .form-error { grid-column: 1 / -1; font-weight: 700; color: var(--red); }
 .form-open { display: grid; gap: 1rem; justify-items: start; }
-/* Googleフォームの埋め込み：上に一本線、左上だけ丸い。高さは十分にとり、中でスクロールする */
+/* Googleフォームの埋め込み：Googleのフォームが自分で枠を持っているので、外側の線や角丸は足さない（上の一辺だけの線は「メガネの淵」になる）。高さは十分にとり、中でスクロールする */
 .form-embed { display: grid; gap: .9rem; }
-.form-frame { display: block; width: 100%; height: 1000px; height: clamp(560px, 88svh, 1000px); border: 0; border-top: 3px solid var(--navy); border-top-left-radius: var(--arc-m); background: var(--white); }
+.form-frame { display: block; width: 100%; height: 1000px; height: clamp(560px, 88svh, 1000px); border: 0; background: var(--white); }
 .form-embed-note { font-size: .9375rem; color: var(--muted); }
 .form-embed-note a { color: var(--ink); }
 /* LINEの入口（お問い合わせページ、フォームの上） */
