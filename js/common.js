@@ -316,11 +316,81 @@
     }
   }
 
+  /* ---------- 体験練習会の日程（content/trial.js が正本） ----------
+   * HTMLに手で書いた日付を、trial.js の表から描き直す。表が空・読めないときは、HTMLのまま。
+   * 過去の日は出さない。全部過去なら「次回は決まりしだいお知らせします」にして、12月のチラシも隠す。 */
+  var TRIAL_NONE = '次回の体験練習会は、決まりしだいお知らせします。';
+  function trialToday() {
+    var o = new Date(Date.now() + 9 * 3600 * 1000);   // 日本時間
+    var q = /[?&]today=(\d{4}-\d{2}-\d{2})/.exec(location.search);   // 確認用：?today=2026-12-14
+    var p = q ? parseYMD(q[1]) : null;
+    return p ? p.y * 10000 + p.m * 100 + p.d : o.getUTCFullYear() * 10000 + (o.getUTCMonth() + 1) * 100 + o.getUTCDate();
+  }
+  function initTrial() {
+    var lists = document.querySelectorAll('[data-trial-list]');
+    if (!lists.length) return;
+    var src = window.TRIAL_SESSIONS;
+    if (!Array.isArray(src)) return;
+    var all = src.map(function (s) {
+      var p = s && typeof s.date === 'string' ? parseYMD(s.date) : null;
+      return p ? { p: p, n: p.y * 10000 + p.m * 100 + p.d, start: String(s.start || ''), end: String(s.end || ''), venue: String(s.venue || '') } : null;
+    }).filter(Boolean);
+    if (!all.length) return;   // 空・読めない行だけ → HTMLのまま
+    var now = trialToday();
+    var up = all.filter(function (s) { return s.n >= now; }).sort(function (a, b) { return a.n - b.n; });
+    lists.forEach(function (ul) {
+      var withTitle = ul.getAttribute('data-trial-list') === 'top';   // トップは「体験練習会 13:00〜15:00」、入部案内は時間だけ
+      var grid = ul.closest('.join-grid');
+      var flyer = grid && grid.querySelector('[data-trial-flyer]');
+      var head = document.querySelector('[data-trial-title]');
+      if (!up.length) {
+        var note = el('p', 'note', TRIAL_NONE); note.setAttribute('data-trial-none', '');
+        ul.replaceWith(note);
+        if (flyer) flyer.hidden = true;
+        if (grid) grid.classList.add('no-flyer');
+        if (head) head.textContent = '体験練習会';
+        return;
+      }
+      ul.textContent = '';
+      up.forEach(function (s) {
+        var li = el('li');
+        var dd = el('span', 'dd', s.p.m + '/' + s.p.d); dd.appendChild(el('small', null, '（' + weekdayOf(s.p) + '）'));
+        var time = s.start ? s.start + (s.end ? '〜' + s.end : '〜') : '';
+        var dw = el('span', 'dw', [withTitle ? '体験練習会' : '', time].filter(Boolean).join(' '));
+        if (s.venue) dw.appendChild(el('span', null, s.venue));
+        li.appendChild(dd); li.appendChild(dw); ul.appendChild(li);
+      });
+      if (head) {
+        var months = {}; up.forEach(function (s) { months[s.p.m] = 1; });
+        var ms = Object.keys(months);
+        head.textContent = ms.length === 1 ? ms[0] + '月の体験練習会' : '体験練習会の日程';
+      }
+    });
+  }
+
+  /* ---------- 計測（Googleタグマネージャー） ----------
+   * config.js の analytics.gtmId が「GTM-英数字」のときだけ読み込む。空なら何も読まない。
+   * 読み込みはこの1つの関数にまとめてある。同意バナーを付けるときは、この関数を
+   * 「同意が取れたあと」に呼ぶ形に変えるだけでよい（boot からの呼び出しを外して、同意の処理から呼ぶ）。 */
+  var analyticsStarted = false;
+  function startAnalytics() {
+    var id = (CFG.analytics || {}).gtmId;
+    if (analyticsStarted || typeof id !== 'string' || !/^GTM-[A-Z0-9]+$/.test(id)) return;
+    analyticsStarted = true;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(id);
+    document.head.appendChild(s);
+  }
+
   /* ---------- 起動 ---------- */
   function boot() {
     document.documentElement.classList.remove('no-js');
     document.documentElement.classList.add('js');
-    initMenu(); initLightbox(); initNews(); initResults(); initForms();
+    initMenu(); initLightbox(); initNews(); initResults(); initForms(); initTrial();
+    startAnalytics();
     document.querySelectorAll('[data-year]').forEach(function (n) { n.textContent = new Date().getFullYear(); });
     document.querySelectorAll('[data-social]').forEach(function (a) {
       var k = a.getAttribute('data-social');

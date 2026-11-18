@@ -13,13 +13,14 @@ URLやIDは `config.js` に集めてあります。
 | **試合結果を足す** | Googleスプレッドシート「試合結果」タブに1行足す |
 | **活動予定を足す・変える** | Googleカレンダー（つながるまでは `content/events.js`） |
 | **シート・カレンダー・フォーム・ドライブのURLやID** | `config.js`（コメントに、何を入れれば動くかが書いてあります） |
-| **体験練習会の日にち・会場**（12/13・12/20） | `index.html`（「体験・入団のご案内」）、`join/index.html`（「12月の体験練習会」）、`parents/index.html` と `index.html` のお知らせ欄、`content/events.js`。**4か所そろえて直します** |
+| **計測（GTM）を入れる** | `config.js` の `analytics.gtmId` に「GTM-」で始まるIDを入れる（空のあいだは何も読み込みません） |
+| **体験練習会の日にち・会場** | **`content/trial.js` の1か所だけ**（トップの「体験・入団のご案内」と、入部案内の体験練習会の日付が自動で変わります。書き方はファイルの頭に書いてあります）。自動では変わらない所（チラシ画像、お知らせ欄、ページの説明文、`content/events.js` の控え）も、ファイルの頭に一覧があります |
 | **練習日・時間、会費、体験入会の案内** | `join/index.html` |
 | **スタッフの紹介・資格** | `staff/index.html` |
 | **クラブ紹介の文章** | `about/index.html`（トップの紹介文は `index.html`） |
 | **試合結果のHTML上の控え** | `results/index.html`（シートが読めないときに出る内容） |
 | **活動場所の説明** | `parents/index.html` の「活動場所」 |
-| **メニューの項目・フッター** | 全ページの `<header>` と `<footer>`（同じ内容がページごとに入っています。全部そろえて直します） |
+| **メニューの項目・フッター** | 全9ページの `<header>` と `<footer>` を**そろえて直します**。対象：`index.html` `about/index.html` `staff/index.html` `results/index.html` `join/index.html` `contact/index.html` `parents/index.html` `news/index.html` `404.html`。同じ内容がページごとに入っています（JSで差し込むと、JSが動かないとき・検索のときに消えてしまうため、あえて手書きのままです） |
 | **色・文字の大きさ・余白** | `css/style.css` のいちばん上（`:root` の中） |
 | **写真の入れ替え** | `images/` のファイルを同じ名前で差し替え（下の注意を読んでください） |
 | **ページを増やす** | 既存のフォルダ（例：`staff/`）をコピーして、中の `index.html` を書き換える |

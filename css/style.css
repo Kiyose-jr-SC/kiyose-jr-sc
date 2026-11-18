@@ -287,7 +287,7 @@ button { font: inherit; color: inherit; }
 
 /* ---------- 体験の案内 ---------- */
 .join-grid { display: grid; gap: clamp(26px, 5vw, 60px); align-items: center; }
-@media (min-width: 900px) { .join-grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); } }
+@media (min-width: 900px) { .join-grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); } .join-grid.no-flyer { grid-template-columns: minmax(0, 1fr); } }   /* チラシを隠したとき（全部の日程が過去）は1列 */
 .flyer { margin: 0; border-top-left-radius: var(--arc-m); overflow: hidden; background: var(--white); box-shadow: 0 14px 30px rgba(9, 23, 48, .18); }
 .flyer a { display: block; }
 .flyer img { width: 100%; height: auto; }
@@ -302,6 +302,7 @@ button { font: inherit; color: inherit; }
 .dates .dw { font-weight: 700; }
 .dates .dw span { display: block; font-weight: 500; color: var(--muted); font-size: .9375rem; }
 .note { color: var(--muted); font-size: .9375rem; line-height: 1.8; }
+.big-offer + .note[data-trial-none] { margin-top: clamp(20px, 3vw, 32px); color: inherit; font-size: 1.0625rem; font-weight: 700; }   /* 日程が全部過去になったときの案内（日付の並びがあった場所） */
 /* 体験会の段（山吹のベタ）：日付は白いカードに並べる。強調の下線は紺のうすい線（山吹の上では山吹が見えない） */
 .sec.yellow .big-offer em { box-shadow: inset 0 -.36em 0 rgba(15, 36, 71, .2); }
 .sec.yellow .dates { gap: 14px; }
@@ -508,7 +509,7 @@ button { font: inherit; color: inherit; }
 .form-done { grid-column: 1 / -1; font-weight: 900; color: var(--navy); }
 .form-error { grid-column: 1 / -1; font-weight: 700; color: var(--red); }
 .form-open { display: grid; gap: 1rem; justify-items: start; }
-/* Googleフォームの埋め込み：Googleのフォームが自分で枠を持っているので、外側の線や角丸は足さない（上の一辺だけの線は「メガネの淵」になる）。高さは十分にとり、中でスクロールする */
+/* Googleフォームの埋め込み：Googleのフォームが自分で枠を持っているので、外側の線や角丸は足さない（上の一辺だけに線を引くと、角のところで線が反って不自然に見える）。高さは十分にとり、中でスクロールする */
 .form-embed { display: grid; gap: .9rem; }
 .form-frame { display: block; width: 100%; height: 1000px; height: clamp(560px, 88svh, 1000px); border: 0; background: var(--white); }
 .form-embed-note { font-size: .9375rem; color: var(--muted); }
