@@ -326,14 +326,26 @@
     var p = q ? parseYMD(q[1]) : null;
     return p ? p.y * 10000 + p.m * 100 + p.d : o.getUTCFullYear() * 10000 + (o.getUTCMonth() + 1) * 100 + o.getUTCDate();
   }
+  /* trial.js の日付を読む：全角の数字・ハイフンの仲間（－ー‐‑–—−）を半角にそろえ、ありえない日付（13月・32日・2月30日など）は null にする */
+  function half(s) {
+    return String(s == null ? '' : s)
+      .replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+      .replace(/[－ー‐‑–—−]/g, '-').replace(/：/g, ':').replace(/[\s　]+/g, '');
+  }
+  function trialDate(s) {
+    var m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(half(s));
+    if (!m) return null;
+    var y = +m[1], mo = +m[2], d = +m[3], t = new Date(Date.UTC(y, mo - 1, d));
+    return t.getUTCFullYear() === y && t.getUTCMonth() === mo - 1 && t.getUTCDate() === d ? { y: y, m: mo, d: d } : null;
+  }
   function initTrial() {
     var lists = document.querySelectorAll('[data-trial-list]');
     if (!lists.length) return;
     var src = window.TRIAL_SESSIONS;
     if (!Array.isArray(src)) return;
     var all = src.map(function (s) {
-      var p = s && typeof s.date === 'string' ? parseYMD(s.date) : null;
-      return p ? { p: p, n: p.y * 10000 + p.m * 100 + p.d, start: String(s.start || ''), end: String(s.end || ''), venue: String(s.venue || '') } : null;
+      var p = s && typeof s.date === 'string' ? trialDate(s.date) : null;
+      return p ? { p: p, n: p.y * 10000 + p.m * 100 + p.d, start: half(s.start), end: half(s.end), venue: String(s.venue || '') } : null;
     }).filter(Boolean);
     if (!all.length) return;   // 空・読めない行だけ → HTMLのまま
     var now = trialToday();
