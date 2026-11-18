@@ -84,8 +84,8 @@ window.SITE_CONFIG = {
    *    ・子どもの名前など、個人がわかることは書かないでください（ページは誰でも見られます）。
    */
   calendar: {
-    calendarId: '',
-    apiKey: '',
+    calendarId: '9a0701171e65ee91384ce2f9a27a7cc0cd3be3fceebb8b86403681d895979c93@group.calendar.google.com',
+    apiKey: 'AIzaSyC4KPWWGV4Qm8jFq3fARPqmufMALoD8yX4',   // kiyose-jr-sc.club と vercel.app だけ・Calendar API だけに制限済み
     // 種目が書かれていない予定のタイトル
     defaultTitle: '練習',
     // タイトルの頭にあると外す言葉（「清瀬ジュニアSC蹴り納め」→「蹴り納め」。サイト自体がクラブのものなので不要）
