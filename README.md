@@ -23,7 +23,7 @@ URLやIDは `config.js` に集めてあります。
 | **メニューの項目・フッター** | 全9ページの `<header>` と `<footer>` を**そろえて直します**。対象：`index.html` `about/index.html` `staff/index.html` `results/index.html` `join/index.html` `contact/index.html` `parents/index.html` `news/index.html` `404.html`。同じ内容がページごとに入っています（JSで差し込むと、JSが動かないとき・検索のときに消えてしまうため、あえて手書きのままです） |
 | **色・文字の大きさ・余白** | `css/style.css` のいちばん上（`:root` の中） |
 | **写真の入れ替え** | `images/` のファイルを同じ名前で差し替え（下の注意を読んでください） |
-| **ページを増やす** | 既存のフォルダ（例：`staff/`）をコピーして、中の `index.html` を書き換える |
+| **ページを増やす** | `_template/index.html` を複製して作る（手順はチャッピーへの指示書） |
 
 ## ページ一覧
 
