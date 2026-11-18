@@ -109,7 +109,7 @@ window.SITE_CONFIG = {
    * 例）gtmId: 'GTM-ABC1234'
    */
   analytics: {
-    gtmId: ''
+    gtmId: 'GTM-KTW2X8Q6'
   },
 
   /* ---------- 資料（Googleドライブ） ----------

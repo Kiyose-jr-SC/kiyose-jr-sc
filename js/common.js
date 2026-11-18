@@ -388,6 +388,7 @@
   function startAnalytics() {
     var id = (CFG.analytics || {}).gtmId;
     if (analyticsStarted || typeof id !== 'string' || !/^GTM-[A-Z0-9]+$/.test(id)) return;
+    if (/^\/parents(\/|$)/.test(location.pathname)) return;   // 保護者ページ（鍵の中）は計測しない
     analyticsStarted = true;
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
