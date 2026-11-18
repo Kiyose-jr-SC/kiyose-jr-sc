@@ -302,7 +302,8 @@ button { font: inherit; color: inherit; }
 .dates .dw { font-weight: 700; }
 .dates .dw span { display: block; font-weight: 500; color: var(--muted); font-size: .9375rem; }
 .note { color: var(--muted); font-size: .9375rem; line-height: 1.8; }
-.big-offer + .note[data-trial-none] { margin-top: clamp(20px, 3vw, 32px); color: inherit; font-size: 1.0625rem; font-weight: 700; }   /* 日程が全部過去になったときの案内（日付の並びがあった場所） */
+.note[data-trial-none] { color: inherit; font-size: 1.0625rem; font-weight: 700; }   /* トップ・入部案内とも同じ太さ・大きさ */
+.big-offer + .note[data-trial-none] { margin-top: clamp(20px, 3vw, 32px); }   /* 日程が全部過去になったときの案内（日付の並びがあった場所） */
 /* 体験会の段（山吹のベタ）：日付は白いカードに並べる。強調の下線は紺のうすい線（山吹の上では山吹が見えない） */
 .sec.yellow .big-offer em { box-shadow: inset 0 -.36em 0 rgba(15, 36, 71, .2); }
 .sec.yellow .dates { gap: 14px; }
